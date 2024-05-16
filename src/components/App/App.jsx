@@ -5,11 +5,13 @@ import { SearchBar } from "../SearchBar/SearchBar";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import { Loader } from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { LoadMoreBtn } from "../LoadMoreBtn/LoadMoreBtn";
 
 export default function App() {
   const [images, setImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [page, setPage] = useState(1);
 
   const fetchImages = async (topic, page) => {
     try {
@@ -33,6 +35,10 @@ export default function App() {
     fetchImages(value, 1);
   };
 
+  const handleLoadMore = async () => {
+    setPage(page + 1);
+  };
+
   return (
     <>
       <Toaster />
@@ -40,6 +46,7 @@ export default function App() {
       {isError && <ErrorMessage />}
       {loader && <Loader />}
       <ImageGallery images={images} />
+      <LoadMoreBtn onClick={handleLoadMore} />
     </>
   );
 }
