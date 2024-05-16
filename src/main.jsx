@@ -4,8 +4,8 @@ import App from "./components/App/App";
 import "./index.css";
 // import { Toaster } from "react-hot-toast";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    {/* <Toaster /> */}
-    <App />
-  </React.StrictMode>
+  <App />
+  // <React.StrictMode>
+
+  // </React.StrictMode>
 );

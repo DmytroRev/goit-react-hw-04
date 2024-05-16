@@ -1,11 +1,7 @@
-export default function ImageCard({ images }) {
+export default function ImageCard({ image }) {
   return (
     <div>
-      {images.map((image) => (
-        <div key={image.id}>
-          <img src={image.small} alt="asd" />
-        </div>
-      ))}
+      <img src={image.small} alt="Image" />
     </div>
   );
 }

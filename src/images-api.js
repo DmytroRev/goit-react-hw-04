@@ -1,6 +1,6 @@
 import axios from "axios";
 
-axios.defaults.baseURL = "https://api.unsplash.com/"
+axios.defaults.baseURL = "https://api.unsplash.com"
 
 const API_KEY = "3YMGh-G1vOJMJEVOYw_0t6Ipvy6C6mHZuPuQHf2fNPo"
 
@@ -17,8 +17,14 @@ export const getImages = async (topic, currentPage) => {
       }
     });
       
-       const data = response.data
-    return data.map(image => ({
+    const dataImg = response.data.results
+    
+     if (!dataImg || dataImg.length === 0) {
+      return []; 
+    }
+
+    return dataImg.map(image => ({
+       id: image.id,
       small: image.urls.small,
       regular: image.urls.regular
     }));

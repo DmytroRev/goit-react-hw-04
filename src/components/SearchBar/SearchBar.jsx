@@ -10,10 +10,12 @@ export const SearchBar = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (searchImage.trim() !== "") {
-      onSubmit(searchImage);
-    } else {
+    if (searchImage.trim() === "") {
       toast.error("Type something:)");
+      return;
+    } else {
+      setSearchImage("");
+      onSubmit(searchImage);
     }
   };
 

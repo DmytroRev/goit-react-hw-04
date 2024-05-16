@@ -1,44 +1,45 @@
 import { useState, useEffect } from "react";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import { getImages } from "../../images-api";
 import { SearchBar } from "../SearchBar/SearchBar";
 import ImageGallery from "../ImageGallery/ImageGallery";
 import { Loader } from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function App() {
   const [images, setImages] = useState([]);
   const [loader, setLoader] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        setLoader(true);
-        const data = await getImages("", 1);
-        setImages(data);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      } finally {
-        setLoader(false);
-      }
-    };
-
-    fetchImages();
-  }, []);
-
-  const handleFormSubmit = async (value) => {
+  const fetchImages = async (topic, page) => {
     try {
-      const data = await getImages(value, 1);
+      setLoader(true);
+      setIsError(false);
+      const data = await getImages(topic, page);
       setImages(data);
     } catch (error) {
-      console.error("Error fetching images:", error);
+      setIsError(true);
+      toast.error("Failed to fetch images");
+    } finally {
+      setLoader(false);
     }
   };
+
+  const handleFormSubmit = (value) => {
+    if (value.trim() === "") {
+      toast.error("Please enter a search term");
+      return;
+    }
+    fetchImages(value, 1);
+  };
+
   return (
     <>
       <Toaster />
       <SearchBar onSubmit={handleFormSubmit} />
+      {isError && <ErrorMessage />}
+      {loader && <Loader />}
       <ImageGallery images={images} />
-      <Loader />
     </>
   );
 }

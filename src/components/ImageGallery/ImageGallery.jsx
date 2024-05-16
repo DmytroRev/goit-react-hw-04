@@ -2,12 +2,10 @@ import ImageCard from "../ImageCard/ImageCard";
 
 export default function ImageGallery({ images }) {
   return (
-    <ul>
-      <li>
-        <div>
-          <ImageCard images={images} />
-        </div>
-      </li>
-    </ul>
+    <div className="image-gallery">
+      {images.map((image) => (
+        <ImageCard key={image.id} image={image} />
+      ))}
+    </div>
   );
 }
