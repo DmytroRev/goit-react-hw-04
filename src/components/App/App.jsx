@@ -6,47 +6,75 @@ import ImageGallery from "../ImageGallery/ImageGallery";
 import { Loader } from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { LoadMoreBtn } from "../LoadMoreBtn/LoadMoreBtn";
+import ImageModal from "../ImageModal/ImageModal";
 
 export default function App() {
   const [images, setImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchImg, setSearchImg] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectImage, setSelectImage] = useState(null);
 
-  const fetchImages = async (topic, page) => {
-    try {
-      setLoader(true);
-      setIsError(false);
-      const data = await getImages(topic, page);
-      setImages(data);
-    } catch (error) {
-      setIsError(true);
-      toast.error("Failed to fetch images");
-    } finally {
-      setLoader(false);
-    }
-  };
+  useEffect(() => {
+    if (!searchImg) return;
+    const fetchImages = async () => {
+      try {
+        setLoader(true);
+        setIsError(false);
+        const data = await getImages(searchImg, currentPage);
+        setImages((prevImages) =>
+          currentPage === 1 ? data : [...prevImages, ...data]
+        );
+      } catch (error) {
+        setIsError(true);
+        toast.error("Failed to fetch images");
+      } finally {
+        setLoader(false);
+      }
+    };
+    fetchImages();
+  }, [searchImg, currentPage]);
 
   const handleFormSubmit = (value) => {
-    if (value.trim() === "") {
-      toast.error("Please enter a search term");
-      return;
-    }
-    fetchImages(value, 1);
+    setSearchImg(value);
+    setCurrentPage(1);
   };
 
-  const handleLoadMore = async () => {
-    setPage(page + 1);
+  const handleLoadMore = () => {
+    setCurrentPage((prevImages) => prevImages + 1);
   };
 
+  const openModal = (image) => {
+    setSelectImage(image);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectImage(null);
+  };
   return (
     <>
       <Toaster />
       <SearchBar onSubmit={handleFormSubmit} />
       {isError && <ErrorMessage />}
       {loader && <Loader />}
-      <ImageGallery images={images} />
-      <LoadMoreBtn onClick={handleLoadMore} />
+      <ImageGallery images={images} onImageClick={openModal} />
+      {images.length > 0 &&
+        !loader &&
+        !isError &&
+        images.length === currentPage * 12 && (
+          <LoadMoreBtn onClick={handleLoadMore} />
+        )}
+      {isModalOpen && (
+        <ImageModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          image={selectImage}
+        />
+      )}
     </>
   );
 }

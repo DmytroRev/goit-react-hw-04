@@ -26,7 +26,11 @@ export const getImages = async (topic, currentPage) => {
     return dataImg.map(image => ({
        id: image.id,
       small: image.urls.small,
-      regular: image.urls.regular
+      regular: image.urls.regular,  
+      instagram_username: image.user.instagram_username,
+      username: image.user.username,
+      location: image.user.location,
+      total_likes: image.likes
     }));
   } catch (error) {
     console.error("Error fetching images:", error);

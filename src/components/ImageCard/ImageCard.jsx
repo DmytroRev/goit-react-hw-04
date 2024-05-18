@@ -1,7 +1,19 @@
-export default function ImageCard({ image }) {
+import css from "./ImageCard.module.css";
+
+export default function ImageCard({ image, onClick }) {
   return (
-    <div>
-      <img src={image.small} alt="Image" />
+    <div className={css.card} onClick={onClick}>
+      <img
+        className={css.photo}
+        src={image.small}
+        alt="Image"
+        style={{
+          width: 400,
+          height: 280,
+          objectFit: "cover",
+          overflow: "hidden",
+        }}
+      />
     </div>
   );
 }
